@@ -2,6 +2,7 @@ class TalksController < ApplicationController
   before_action :authenticate_user!, only: [
     :new, :create, :edit, :assign, :unassign, :upvote
   ]
+  before_action :find_talk, only: [:show, :edit, :update, :destroy]
 
   def index
     @unscheduled_talks = Talk.unscheduled
@@ -23,21 +24,17 @@ class TalksController < ApplicationController
   end
 
   def show
-    @talk = Talk.find(params[:id])
   end
 
   def edit
-    @talk = Talk.find(params[:id])
   end
 
   def update
-    @talk = Talk.find(params[:id])
     @talk.update_attributes(talk_params)
     redirect_to root_path
   end
 
   def destroy
-    @talk = Talk.find(params[:id])
     @talk.destroy
     redirect_to root_path
   end
@@ -61,6 +58,10 @@ class TalksController < ApplicationController
   end
 
   private
+
+  def find_talk
+    @talk = Talk.find(params[:id])
+  end
 
   def talk_params
     params.require(:talk).permit(:topic, :description, :speak_date)
